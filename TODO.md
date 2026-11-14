@@ -69,9 +69,14 @@ Legenda ukuran: 🟢 kecil (< ½ hari) · 🟡 sedang (½–2 hari) · 🔴 besa
 
 ## Rilis
 
-- [ ] 🟢 Commit awal ke git + push ke GitHub
-- [ ] 🟢 Buat project Supabase Cloud → `supabase db push` + `supabase config push`
-- [ ] 🟢 Deploy Vercel + environment variables (lihat README)
-- [ ] 🟢 Pasang SMTP (Resend/SendGrid) — SMTP bawaan Supabase dibatasi
+- [x] 🟢 Commit awal ke git
+- [ ] 🟢 Push ke GitHub + hubungkan repo ke Vercel (sekarang deploy masih manual lewat `vercel deploy --prod`)
+- [x] 🟢 Buat project Supabase Cloud (`hr-management`, Singapore) → `db push` + `config push` (tanpa template email)
+- [x] 🟢 Deploy Vercel + environment variables → https://hr-management-theta-beryl.vercel.app
+- [ ] 🟢 Pasang SMTP (Resend/SendGrid) — SMTP bawaan Supabase hanya mengirim ke anggota tim & dibatasi per jam,
+      jadi undangan ke karyawan belum terkirim. Setelah SMTP terpasang, jalankan lagi `supabase config push`
+      (dengan site_url production) agar template email Bahasa Indonesia ikut aktif.
+- [ ] 🟢 Ganti password admin production (password awal ada di `.env.local` → `ADMIN_PASSWORD_PROD`)
+- [ ] 🟢 Atur koordinat & radius cabang "Kantor Pusat" di production (masih titik contoh Jakarta)
 - [ ] 🟢 Isi hari libur nasional & cuti bersama 2027
 - [ ] 🟢 Cek ulang plafon upah BPJS JP (berubah tiap Maret)
