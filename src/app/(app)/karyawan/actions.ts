@@ -6,6 +6,7 @@ import { z } from "zod";
 import { requireUser, type AppRole } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { authCallbackUrl, sendPasswordLink } from "@/lib/supabase/email-link";
 import {
   dbError, fail, formObject, invalid, ok, zDate, zMoney, zOptUuid, zUuid, type ActionResult,
 } from "@/lib/action";
@@ -135,12 +136,11 @@ export async function inviteEmployee(employeeId: string, role: AppRole = "employ
   if (emp.status !== "active") return fail("Karyawan tidak aktif.");
 
   const admin = createAdminClient();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
   let userId = emp.user_id;
 
   if (!userId) {
     const { data, error } = await admin.auth.admin.inviteUserByEmail(emp.email, {
-      redirectTo: `${siteUrl}/reset-password`,
+      redirectTo: authCallbackUrl(),
     });
     if (error) {
       if (error.code === "email_exists" || /already/i.test(error.message)) {
@@ -153,7 +153,7 @@ export async function inviteEmployee(employeeId: string, role: AppRole = "employ
     if (linkErr) return dbError(linkErr);
   } else {
     // Sudah punya akun: kirim ulang link atur password
-    const { error } = await supabase.auth.resetPasswordForEmail(emp.email);
+    const { error } = await sendPasswordLink(emp.email);
     if (error) return fail(`Gagal mengirim email: ${error.message}`);
   }
 

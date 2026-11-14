@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { canAccessApp, loadProfile, safeNextPath } from "@/lib/auth";
+import { sendPasswordLink } from "@/lib/supabase/email-link";
 
 export type FormState = {
   error?: string;
@@ -79,8 +80,7 @@ export async function requestPasswordReset(_prev: FormState, formData: FormData)
     return { fieldErrors: { email: [parsed.error.issues[0].message] }, values: { email } };
   }
 
-  const supabase = await createClient();
-  const { error } = await supabase.auth.resetPasswordForEmail(parsed.data);
+  const { error } = await sendPasswordLink(parsed.data);
 
   if (error && (error.code === "over_email_send_rate_limit" || error.status === 429)) {
     return { error: "Terlalu banyak permintaan. Coba lagi beberapa menit lagi.", values: { email } };
